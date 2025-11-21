@@ -1,4 +1,7 @@
 import { Entity } from './entity.js';
+import { Control } from './control.js';
+
+const MOVE_DELAY = 90;
 
 export class GameEngine {
     constructor(ctx, map) {
@@ -6,6 +9,9 @@ export class GameEngine {
         this.map = map;
         this.entities = [];
         this.running = false;
+        this.control;
+
+        this.moveTimer = 0;
     }
 
     start() {
@@ -14,6 +20,8 @@ export class GameEngine {
         this.entities.push(player);
         this.entities.push(horse);
 
+        this.control = new Control((dx, dy) => this.handleControllerMove(dx, dy));
+        this.control.setController(player);
         
         this.running = true;
         this.loop();
@@ -22,10 +30,13 @@ export class GameEngine {
     loop() {
         this.update();
         this.render();
-        if (this.running) requestAnimationFrame(() => this.loop());
+        if (this.running) {
+            requestAnimationFrame(() => this.loop());
+        }
     }
 
     update() {
+
     }
 
     render() {
@@ -36,5 +47,21 @@ export class GameEngine {
             entity.draw(this.ctx);
         }
     }
+
+    handleControllerMove(dx, dy) {
+        const now = performance.now();
+        if (now - this.moveTimer < MOVE_DELAY) return;
+        this.moveTimer = now;
+
+        const c = this.control.getController();
+        
+        const newX = c.x + dx;
+        const newY = c.y + dy;
+
+        if (c) {
+            this.moveTime = 0;
+            if (this.map.tiles[newY][newX] !== '#')
+                c.move(dx, dy);
+        }
     }
 }
