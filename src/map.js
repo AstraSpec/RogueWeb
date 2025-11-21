@@ -17,7 +17,7 @@ export function generateMap(size) {
             ctx.fillStyle = 'white';
             for (let y = 0; y < size; y++) {
                 for (let x = 0; x < size; x++) {
-                    ctx.fillText(tiles[y][x], x * 16, y * 16 + 16)
+                    ctx.fillText(tiles[y][x], x * 16, y * 16);
                 }
             }
         }
