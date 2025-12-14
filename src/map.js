@@ -1,25 +1,26 @@
-export function generateMap(size) {
-    const tiles = [];
+/* 
+    Handles randomly generating the tiles and chunks for the map
+*/
 
-    for (let y = 0; y < size; y++) {
-        tiles[y] = [];
-        for (let x = 0; x < size; x++) {
-            const isWall = Math.random() < 0.1;
-            tiles[y][x] = isWall ? '#' : '.';
-        }
+export class Map {
+    constructor (size) {
+        this.size = size;
+        this.tiles = this.generateMap();
     }
 
-    return {
-        size,
-        tiles,
-        draw(ctx) {
-            ctx.font = '16px monospace';
-            ctx.fillStyle = 'white';
-            for (let y = 0; y < size; y++) {
-                for (let x = 0; x < size; x++) {
-                    ctx.fillText(tiles[y][x], x * 16, y * 16);
-                }
+    // Returns array of tiles for surrounding map
+    generateMap() {
+        const tiles = [];
+
+        // Generates the individual tiles
+        for (let y = 0; y < this.size; y++) {
+            tiles[y] = [];
+            for (let x = 0; x < this.size; x++) {
+                const isWall = Math.random() < 0.1;
+                tiles[y][x] = isWall ? '#' : '.';
             }
         }
-    };
+
+        return tiles;
+    }
 }
