@@ -84,8 +84,24 @@ export class Render {
         }
 
         // Draw entities
-        for (const entity of this.entityManager.entities) {
-            this.setCell(entity.type, entity.x, entity.y, 'yellow');
+        if (this.entityManager && this.entityManager.entities) {
+            for (const entity of this.entityManager.entities) {
+                let char = '?';
+                let color = 'yellow';
+                
+                // Get entity data from registry if available
+                if (entity.id && this.registries && this.registries.entities) {
+                    const entityData = this.registries.entities.get(entity.id);
+                    if (entityData) {
+                        char = entityData.char || '?';
+                    }
+                } else if (entity.type) {
+                    // Fallback to type if no registry
+                    char = entity.type;
+                }
+                
+                this.setCell(char, entity.x, entity.y, color);
+            }
         }
     }
 }

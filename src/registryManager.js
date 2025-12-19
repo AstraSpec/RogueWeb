@@ -1,7 +1,9 @@
 import { TileRegistry } from './tileRegistry.js';
+import { EntityRegistry } from './entityRegistry.js';
 
 const REGISTRY_CONFIG = [
     { name: 'tiles', class: TileRegistry },
+    { name: 'entities', class: EntityRegistry },
 ];
 
 export class RegistryManager {

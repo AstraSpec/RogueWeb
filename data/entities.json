@@ -1,0 +1,20 @@
+{
+  "entities": [
+    {
+      "id": "human",
+      "name": "Human",
+      "char": "👦"
+    },
+    {
+      "id": "goblin",
+      "name": "Goblin",
+      "char": "🧌"
+    },
+    {
+      "id": "dog",
+      "name": "Dog",
+      "char": "🐕"
+    }
+  ]
+}
+

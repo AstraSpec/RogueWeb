@@ -39,7 +39,7 @@ export class ResourceManager {
 
     // Fetch resource from data folder
     async _fetchResource(resourceName) {
-        const response = await fetch(`/data/${resourceName}.json`);
+        const response = await fetch(`./data/${resourceName}.json`);
         
         if (!response.ok) {
             throw new Error(`Failed to load resource: ${resourceName} (${response.status})`);

@@ -1,12 +1,49 @@
+import { Entity } from './entity.js';
+
 export class EntityManager {
-    constructor(eventBus, gameState) {
+    constructor(eventBus, gameState, registries = null) {
         this.eventBus = eventBus;
         this.gameState = gameState;
+        this.registries = registries;
         this.entities = [];
         this.player = null;
     }
 
-    addEntity(entity) {
+    // Create and add entity from entity registry ID
+    addEntity(entityId, x, y) {
+        let entityData = null;
+        
+        // Get entity data from registry if available
+        if (this.registries && this.registries.entities) {
+            entityData = this.registries.entities.get(entityId);
+        }
+        
+        if (!entityData) {
+            console.warn(`Entity ID "${entityId}" not found in registry`);
+            return null;
+        }
+        
+        // Create entity with registry data
+        const entity = new Entity(x, y, entityId);
+        entity.id = entityId;
+        entity.name = entityData.name;
+        
+        this.entities.push(entity);
+        
+        // Sync to GameState
+        this.gameState.state.entities.set(entityId, {
+            x: entity.x,
+            y: entity.y,
+            type: entityId
+        });
+        
+        this.gameState.set('entityCount', this.entities.length);
+        
+        return entity;
+    }
+
+    // Add existing entity (for backward compatibility)
+    addEntityInstance(entity) {
         this.entities.push(entity);
         
         // Sync to GameState
@@ -16,7 +53,7 @@ export class EntityManager {
         this.gameState.state.entities.set(entityId, {
             x: entity.x,
             y: entity.y,
-            type: entity.type
+            type: entity.type || entityId
         });
         
         this.gameState.set('entityCount', this.entities.length);
