@@ -1,8 +1,9 @@
 export class Movement {
-    constructor(eventBus, entityManager, map) {
+    constructor(eventBus, entityManager, map, gameState) {
         this.eventBus = eventBus;
         this.entityManager = entityManager;
         this.map = map;
+        this.gameState = gameState;
 
         this.eventBus.on('input:move', (data) => {
             const player = this.entityManager.getPlayer();
@@ -19,6 +20,22 @@ export class Movement {
         if (this.canMoveTo(x, y)) {
             entity.x = x;
             entity.y = y;
+
+            // Update GameState
+            if (entity === this.entityManager.getPlayer()) {
+                this.gameState.set('playerPosition', { x, y });
+                const turnsElapsed = this.gameState.get('turnsElapsed', 0);
+                this.gameState.set('turnsElapsed', turnsElapsed + 1);
+            }
+            
+            // Update entity in GameState entities map
+            if (entity.id) {
+                const entityData = this.gameState.state.entities.get(entity.id);
+                if (entityData) {
+                    entityData.x = x;
+                    entityData.y = y;
+                }
+            }
 
             this.eventBus.emit('entity:moved', { entity, x, y });
         }

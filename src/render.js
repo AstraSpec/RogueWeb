@@ -1,13 +1,11 @@
-import { get_tile_size } from './constants.js';
-
-const TILE_SIZE = get_tile_size();
-
 export class Render {
-    constructor(ctx, eventBus, map, entityManager) {
+    constructor(ctx, eventBus, map, entityManager, gameState, camera) {
         this.ctx = ctx;
         this.eventBus = eventBus;
         this.map = map;
         this.entityManager = entityManager;
+        this.gameState = gameState;
+        this.camera = camera;
 
         this.eventBus.on('entity:moved', () => {
             this.updateScreen();
@@ -21,13 +19,18 @@ export class Render {
     }
 
     setCell(char, x, y, fillStyle = 'white') {
+        const tileSize = this.gameState.get('config.tileSize', 16);
         this.ctx.font = '16px monospace';
         this.ctx.fillStyle = fillStyle;
-        this.ctx.fillText(char, x * TILE_SIZE, y * TILE_SIZE);
+        
+        const screenPos = this.camera.worldToScreen(x, y);
+        
+        this.ctx.fillText(char, screenPos.x, screenPos.y);
     }
 
     updateScreen() {
-        const sizeInPixels = this.map.size * TILE_SIZE;
+        const tileSize = this.gameState.get('config.tileSize', 16);
+        const sizeInPixels = this.map.size * tileSize;
         this.ctx.clearRect(0, 0, sizeInPixels, sizeInPixels);
 
         // Draw map tiles
