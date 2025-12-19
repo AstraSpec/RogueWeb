@@ -52,13 +52,11 @@ export class Movement {
         }
 
         // Check if tile is walkable using TileRegistry
-        const tileChar = this.map.getTileChar(x, y);
-        if (tileChar && this.registries && this.registries.tiles) {
-            if (this.registries.tiles.isSolidByChar(tileChar)) {
+        const tileId = this.map.getTileId(x, y);
+        if (tileId && this.registries && this.registries.tiles) {
+            if (this.registries.tiles.isSolid(tileId)) {
                 return false;
             }
-        } else if (tileChar === '#') {
-            return false;
         }
 
         // Check if another entity is at this position

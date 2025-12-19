@@ -34,23 +34,22 @@ async function init() {
     // Load all registry data before creating anything else
     await registries.initializeAll();
 
-    // Now create map with initialized tileRegistry
     const map = new Map(32, registries.tiles);
-    
-    // Create game engine with shared eventBus (use CSS dimensions, not scaled)
     const game = new GameEngine(map, cssWidth, cssHeight, eventBus);
     
-    // Set registries on game engine (they're already initialized)
     game.registries = registries;
     game.resourceManager = resourceManager;
     
-    // Create render
-    const render = new Render(ctx, game.eventBus, game.map, game.entityManager, game.gameState, game.camera, game.registries);
-
-    // Start game
-    game.start().catch(error => {
+    // Start game first to create entityManager and entities
+    try {
+        await game.start();
+    } catch (error) {
         console.error('Failed to start game:', error);
-    });
+        return;
+    }
+    
+    // Create render after entities are created
+    const render = new Render(ctx, game.eventBus, game.map, game.entityManager, game.gameState, game.camera, game.registries);
 }
 
 init().catch(error => {

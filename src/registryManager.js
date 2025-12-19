@@ -1,12 +1,18 @@
 import { TileRegistry } from './tileRegistry.js';
 
+const REGISTRY_CONFIG = [
+    { name: 'tiles', class: TileRegistry },
+];
+
 export class RegistryManager {
     constructor(resourceManager, eventBus) {
         this.resourceManager = resourceManager;
         this.eventBus = eventBus;
         
-        // Initialize all registries
-        this.tiles = new TileRegistry(resourceManager, eventBus);
+        // Automatically create all registries from configuration
+        for (const config of REGISTRY_CONFIG) {
+            this[config.name] = new config.class(resourceManager, eventBus);
+        }
     }
 
     // Initialize all registries
@@ -14,16 +20,17 @@ export class RegistryManager {
         const initPromises = [];
         
         // Initialize all registries in parallel
-        if (this.tiles && typeof this.tiles.initialize === 'function') {
-            initPromises.push(this.tiles.initialize());
+        for (const config of REGISTRY_CONFIG) {
+            const registry = this[config.name];
+            if (registry && typeof registry.initialize === 'function') {
+                initPromises.push(registry.initialize());
+            }
         }
         
         await Promise.all(initPromises);
         
         this.eventBus.emit('registries:initialized', {
-            registries: Object.keys(this).filter(key => 
-                this[key] && typeof this[key].initialize === 'function'
-            )
+            registries: REGISTRY_CONFIG.map(config => config.name)
         });
     }
 
@@ -45,9 +52,10 @@ export class RegistryManager {
 
     // Check if all registries are initialized
     isInitialized() {
-        return Object.values(this).every(registry => 
-            !registry || typeof registry.isInitialized !== 'function' || registry.isInitialized()
-        );
+        return REGISTRY_CONFIG.every(config => {
+            const registry = this[config.name];
+            return registry && registry.isInitialized();
+        });
     }
 }
 

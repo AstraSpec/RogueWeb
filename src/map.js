@@ -9,7 +9,7 @@ export class Map {
         this.tiles = this.generateMap();
     }
 
-    // Returns array of tiles for surrounding map
+    // Returns array of tile IDs for surrounding map
     generateMap() {
         const tiles = [];
 
@@ -19,15 +19,12 @@ export class Map {
             for (let x = 0; x < this.size; x++) {
                 const rand = Math.random();
                 
-                // Spawn probabilities
-                let tile;
+                // Spawn probabilities - store tile IDs
                 if (rand < 0.25) {
-                    tile = this.tileRegistry.getTileById("tree");
+                    tiles[y][x] = "tree";
                 } else {
-                    tile = this.tileRegistry.getTileById("grass");
+                    tiles[y][x] = "grass";
                 }
-
-                tiles[y][x] = tile ? tile.char : ' ';
             }
         }
 
@@ -36,20 +33,6 @@ export class Map {
 
     // Get tile ID at position
     getTileId(x, y) {
-        if (x < 0 || y < 0 || x >= this.size || y >= this.size) {
-            return undefined;
-        }
-        
-        const char = this.tiles[y][x];
-        if (this.tileRegistry) {
-            const tile = this.tileRegistry.getTileByChar(char);
-            return tile ? tile.id : undefined;
-        }
-        return undefined;
-    }
-
-    // Get tile character at position
-    getTileChar(x, y) {
         if (x < 0 || y < 0 || x >= this.size || y >= this.size) {
             return undefined;
         }

@@ -60,14 +60,16 @@ export class Render {
         // Draw map tiles
         for (let y = 0; y < this.map.size; y++) {
             for (let x = 0; x < this.map.size; x++) {
-                const tileChar = this.map.tiles[y][x];
+                const tileId = this.map.getTileId(x, y);
+                let char = ' ';
                 let color = 'white';
                 let backgroundColor = null;
                 
-                // Get tile color and background from TileRegistry if available
-                if (this.registries && this.registries.tiles) {
-                    const tile = this.registries.tiles.getTileByChar(tileChar);
+                // Get tile data from TileRegistry if available
+                if (tileId && this.registries && this.registries.tiles) {
+                    const tile = this.registries.tiles.get(tileId);
                     if (tile) {
+                        char = tile.char || ' ';
                         if (tile.color) {
                             color = tile.color;
                         }
@@ -77,7 +79,7 @@ export class Render {
                     }
                 }
                 
-                this.setCell(tileChar, x, y, color, backgroundColor);
+                this.setCell(char, x, y, color, backgroundColor);
             }
         }
 
