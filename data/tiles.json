@@ -1,0 +1,45 @@
+{
+  "tiles": [
+    {
+      "id": "floor",
+      "name": "Floor",
+      "char": ".",
+      "color": "#888888",
+      "background": "#555555",
+      "solid": false
+    },
+    {
+      "id": "wall",
+      "name": "Wall",
+      "char": "#",
+      "color": "#eb9834",
+      "background": "#ba6a30",
+      "solid": true
+    },
+    {
+      "id": "tree",
+      "name": "Tree",
+      "char": "T",
+      "color": "#2d5016",
+      "background": "#3eba30",
+      "solid": true
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "char": "~",
+      "color": "#4169E1",
+      "background": "#3035ba",
+      "solid": false
+    },
+    {
+      "id": "grass",
+      "name": "Grass",
+      "char": " ",
+      "color": "#228B22",
+      "background": "#3eba30",
+      "solid": false
+    }
+  ]
+}
+

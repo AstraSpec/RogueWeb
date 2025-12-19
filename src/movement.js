@@ -1,9 +1,10 @@
 export class Movement {
-    constructor(eventBus, entityManager, map, gameState) {
+    constructor(eventBus, entityManager, map, gameState, registries) {
         this.eventBus = eventBus;
         this.entityManager = entityManager;
         this.map = map;
         this.gameState = gameState;
+        this.registries = registries;
 
         this.eventBus.on('input:move', (data) => {
             const player = this.entityManager.getPlayer();
@@ -50,8 +51,13 @@ export class Movement {
             return false;
         }
 
-        // Check if tile is walkable
-        if (this.map.tiles[y][x] === '#') {
+        // Check if tile is walkable using TileRegistry
+        const tileChar = this.map.getTileChar(x, y);
+        if (tileChar && this.registries && this.registries.tiles) {
+            if (this.registries.tiles.isSolidByChar(tileChar)) {
+                return false;
+            }
+        } else if (tileChar === '#') {
             return false;
         }
 
