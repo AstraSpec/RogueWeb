@@ -11,3 +11,44 @@ canvas {
   border: 2px solid #444;
   image-rendering: pixelated;
 }
+
+/* Base UI Element Styles */
+.ui-element {
+  box-sizing: border-box;
+}
+
+/* Panel Styles */
+.ui-panel {
+  background: rgba(30, 30, 30, 0.95);
+  border: 2px solid #555;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+}
+
+/* Close Button Styles */
+.ui-panel-close {
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.ui-panel-close:hover {
+  background: rgba(255, 68, 68, 0.2);
+}
+
+.ui-panel-close:active {
+  transform: scale(0.95) !important;
+}
+
+/* Map Panel Styles */
+.ui-map-panel {
+  /* Map panel specific styles can be added here if needed */
+}
+
+.ui-map-container {
+  user-select: none;
+  pointer-events: none;
+}

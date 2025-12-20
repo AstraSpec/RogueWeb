@@ -1,8 +1,10 @@
 import { GameEngine } from './engine.js';
+import { GameMap } from './map.js';
 import { Render } from './render.js';
 import { EventBus } from './eventbus.js';
 import { ResourceManager } from './resourceManager.js';
 import { RegistryManager } from './registryManager.js';
+import { MapPanel } from './ui/MapPanel.js';
 
 async function init() {
     const canvas = document.getElementById('game');
