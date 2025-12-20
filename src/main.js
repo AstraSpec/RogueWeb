@@ -1,5 +1,4 @@
 import { GameEngine } from './engine.js';
-import { Map } from './map.js';
 import { Render } from './render.js';
 import { EventBus } from './eventbus.js';
 import { ResourceManager } from './resourceManager.js';
@@ -34,11 +33,14 @@ async function init() {
     // Load all registry data before creating anything else
     await registries.initializeAll();
 
-    const map = new Map(32, registries.tiles);
-    const game = new GameEngine(map, cssWidth, cssHeight, eventBus);
+    const game = new GameEngine(null, cssWidth, cssHeight, eventBus);
     
     game.registries = registries;
     game.resourceManager = resourceManager;
+    
+    // Create map with gameState reference (needs gameState for chunkSize)
+    const map = new GameMap(200, registries.tiles, registries.chunks, game.gameState);
+    game.map = map;
     
     // Start game first to create entityManager and entities
     try {
@@ -50,6 +52,23 @@ async function init() {
     
     // Create render after entities are created
     const render = new Render(ctx, game.eventBus, game.map, game.entityManager, game.gameState, game.camera, game.registries);
+    
+    // Create map panel
+    const mapPanel = new MapPanel({
+        eventBus: eventBus,
+        map: game.map,
+        registries: registries,
+        gameState: game.gameState
+    });
+    
+    // Handle M key to toggle map panel
+    window.addEventListener('keydown', (e) => {
+        // Only handle if not already handled by input system
+        if (e.key === 'm' || e.key === 'M') {
+            e.preventDefault();
+            mapPanel.toggle();
+        }
+    });
 }
 
 init().catch(error => {

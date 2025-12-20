@@ -25,10 +25,23 @@
       "solid": true
     },
     {
+      "id": "rock",
+      "name": "Rock",
+      "char": "🪨",
+      "background": "#3eba30",
+      "solid": false
+    },
+    {
+      "id": "flower",
+      "name": "Flower",
+      "char": "🌸",
+      "background": "#3eba30",
+      "solid": false
+    },
+    {
       "id": "water",
       "name": "Water",
       "char": "~",
-      "color": "#4169E1",
       "background": "#3035ba",
       "solid": false
     },

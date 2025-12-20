@@ -38,6 +38,11 @@ export class Movement {
                 }
             }
 
+            // Generate tiles for chunks around player if they moved
+            if (entity === this.entityManager.getPlayer() && this.map && typeof this.map.generateChunksAround === 'function') {
+                this.map.generateChunksAround(x, y, 2);
+            }
+            
             this.eventBus.emit('entity:moved', { entity, x, y });
         }
         else {
@@ -46,8 +51,9 @@ export class Movement {
     }
 
     canMoveTo(x, y) {
-        // Check bounds
-        if (x < 0 || y < 0 || x >= this.map.size || y >= this.map.size) {
+        // Check bounds (use world size instead of chunk count)
+        const worldSize = this.map.getWorldSize();
+        if (x < 0 || y < 0 || x >= worldSize || y >= worldSize) {
             return false;
         }
 

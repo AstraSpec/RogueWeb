@@ -1,9 +1,11 @@
 import { TileRegistry } from './tileRegistry.js';
 import { EntityRegistry } from './entityRegistry.js';
+import { ChunkRegistry } from './chunkRegistry.js';
 
 const REGISTRY_CONFIG = [
     { name: 'tiles', class: TileRegistry },
     { name: 'entities', class: EntityRegistry },
+    { name: 'chunks', class: ChunkRegistry },
 ];
 
 export class RegistryManager {

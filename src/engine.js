@@ -36,9 +36,22 @@ export class GameEngine {
         // Initialize movement with registries
         this.movement = new Movement(this.eventBus, this.entityManager, this.map, this.gameState, this.registries);
         
+        // Spawn player in the center chunk
+        const chunkSize = this.gameState.get('config.chunkSize', 32);
+        const mapSize = this.gameState.get('config.mapSize', 64);
+        const playerChunkX = Math.floor(mapSize / 2);
+        const playerChunkY = Math.floor(mapSize / 2);
+        const playerWorldX = playerChunkX * chunkSize + Math.floor(chunkSize / 2);
+        const playerWorldY = playerChunkY * chunkSize + Math.floor(chunkSize / 2);
+        
+        // Generate tiles for chunks around player
+        if (this.map && typeof this.map.generateChunksAround === 'function') {
+            this.map.generateChunksAround(playerWorldX, playerWorldY, 2);
+        }
+        
         // Create entities using registry IDs
-        const player = this.entityManager.addEntity('human', 16, 16);
-        const dog = this.entityManager.addEntity('dog', 16, 18);
+        const player = this.entityManager.addEntity('human', playerWorldX, playerWorldY);
+        const dog = this.entityManager.addEntity('dog', playerWorldX, playerWorldY + 2);
         
         if (player) {
             this.entityManager.setPlayer(player);

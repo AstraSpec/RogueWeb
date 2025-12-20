@@ -17,7 +17,8 @@ export class GameState {
 
             config : {
                 tileSize : 16,
-                chunkSize : 32
+                chunkSize : 32,
+                mapSize : 32
             }
         }
     }

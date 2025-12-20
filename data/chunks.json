@@ -1,0 +1,16 @@
+{
+  "chunks": [
+    {
+      "id": "forest",
+      "name": "Forest",
+      "char": "🌳",
+      "background": "#1d8f3d"
+    },
+    {
+      "id": "plains",
+      "name": "Plains",
+      "background": "#3eba30"
+    }
+  ]
+}
+

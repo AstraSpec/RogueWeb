@@ -57,29 +57,73 @@ export class Render {
         const viewportHeight = this.camera.viewportHeight;
         this.ctx.clearRect(0, 0, viewportWidth, viewportHeight);
 
-        // Draw map tiles
-        for (let y = 0; y < this.map.size; y++) {
-            for (let x = 0; x < this.map.size; x++) {
-                const tileId = this.map.getTileId(x, y);
-                let char = ' ';
-                let color = 'white';
-                let backgroundColor = null;
+        // Calculate visible chunks based on camera position
+        const cameraPos = this.camera.getPosition();
+        const tileSize = this.gameState.get('config.tileSize', 16);
+        const chunkSize = this.map.chunkSize;
+        
+        // Calculate viewport bounds in world coordinates
+        const tilesVisibleX = Math.ceil(viewportWidth / tileSize) + 2; // +2 for padding
+        const tilesVisibleY = Math.ceil(viewportHeight / tileSize) + 2;
+        
+        const minWorldX = Math.floor(cameraPos.x - tilesVisibleX / 2);
+        const maxWorldX = Math.ceil(cameraPos.x + tilesVisibleX / 2);
+        const minWorldY = Math.floor(cameraPos.y - tilesVisibleY / 2);
+        const maxWorldY = Math.ceil(cameraPos.y + tilesVisibleY / 2);
+        
+        // Calculate which chunks are visible
+        const minChunkX = Math.floor(minWorldX / chunkSize);
+        const maxChunkX = Math.ceil(maxWorldX / chunkSize);
+        const minChunkY = Math.floor(minWorldY / chunkSize);
+        const maxChunkY = Math.ceil(maxWorldY / chunkSize);
+        
+        // Generate and render only visible chunks
+        for (let chunkY = minChunkY; chunkY <= maxChunkY; chunkY++) {
+            for (let chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+                // Get chunk (will generate if it doesn't exist)
+                const chunk = this.map.getChunk(chunkX, chunkY);
                 
-                // Get tile data from TileRegistry if available
-                if (tileId && this.registries && this.registries.tiles) {
-                    const tile = this.registries.tiles.get(tileId);
-                    if (tile) {
-                        char = tile.char || ' ';
-                        if (tile.color) {
-                            color = tile.color;
+                if (!chunk) continue;
+                
+                // Calculate world position of chunk origin
+                const worldStartX = chunk.chunkX * chunkSize;
+                const worldStartY = chunk.chunkY * chunkSize;
+                
+                // Draw tiles in this chunk
+                for (let localY = 0; localY < chunkSize; localY++) {
+                    for (let localX = 0; localX < chunkSize; localX++) {
+                        const worldX = worldStartX + localX;
+                        const worldY = worldStartY + localY;
+                        
+                        // Skip tiles outside viewport
+                        if (worldX < minWorldX || worldX > maxWorldX || 
+                            worldY < minWorldY || worldY > maxWorldY) {
+                            continue;
                         }
-                        if (tile.background) {
-                            backgroundColor = tile.background;
+                        
+                        // Get tile ID from map (uses chunk type)
+                        const tileId = this.map.getTileId(worldX, worldY);
+                        let char = ' ';
+                        let color = 'white';
+                        let backgroundColor = null;
+                        
+                        // Get tile data from TileRegistry if available
+                        if (tileId && this.registries && this.registries.tiles) {
+                            const tile = this.registries.tiles.get(tileId);
+                            if (tile) {
+                                char = tile.char || ' ';
+                                if (tile.color) {
+                                    color = tile.color;
+                                }
+                                if (tile.background) {
+                                    backgroundColor = tile.background;
+                                }
+                            }
                         }
+                        
+                        this.setCell(char, worldX, worldY, color, backgroundColor);
                     }
                 }
-                
-                this.setCell(char, x, y, color, backgroundColor);
             }
         }
 
